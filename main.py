@@ -9,14 +9,24 @@ yc_webpage = response.text
 soup = BeautifulSoup(yc_webpage, "html.parser") # 用soup讀取response後的資料。
 # print(soup) # 印出soup
 
-# 用soup找到name為span，class為titleline。
-article_tag = soup.find(name='span', class_="titleline")
-print(article_tag.get_text()) # 印出title line。
+articles = soup.find_all(name="span", class_="titleline")
+article_texts = []
+article_links = []
 
-# 印出article link，找到a的tag，用get找href的資料。
-article_link = article_tag.find(name="a").get("href")
-print(article_link)
+for article_tag in articles:
+    text = article_tag.getText()
+    article_texts.append(text)
+    link = article_tag.find(name='a').get("href")
+    article_links.append(link)
 
-# 印出article upvote
-article_upvote = soup.find(name='span', class_='score')
-print(article_upvote.get_text())
+print(article_texts)
+print(article_links)
+
+article_upvotes = [int(score.getText().split()[0]) for score in soup.find_all(name="span", class_="score")]
+print(article_upvotes)
+largest_number = max(article_upvotes)
+largest_index = article_upvotes.index(largest_number)
+
+print(article_texts[largest_index])
+print(article_links[largest_index])
+print(article_upvotes[largest_index])
